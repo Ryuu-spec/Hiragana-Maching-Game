@@ -71,19 +71,15 @@
 
         .game-board {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 2vw;
             padding: 0 2vw;
             flex: 1;
             align-content: center;
-            max-width: 80vw;
-            max-height: 70vh;
-            margin: 0 auto;
         }
 
         .card {
-            aspect-ratio: 1;
+            aspect-ratio: 0.8;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -148,18 +144,23 @@
             border-color: #f44336;
         }
 
+        .card.placeholder {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
 
-        .card:hover:not(.matched):not(.selected) {
+        .card:hover:not(.matched):not(.selected):not(.placeholder) {
             transform: scale(1.08) translateY(-8px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
-        .card:active:not(.matched) {
+        .card:active:not(.matched):not(.placeholder) {
             transform: scale(1.02);
         }
 
@@ -228,12 +229,12 @@
 
     <script>
         const cardsTemplate = [
-            { type: 'romaji', value: 'ya', pair: 'や' },
+            { type: 'romaji', value: 'yo', pair: 'よ' },
             { type: 'romaji', value: 'yu', pair: 'ゆ' },
-            { type: 'hiragana', value: 'よ', pair: 'yo', color: '#8B7355' },
-            { type: 'hiragana', value: 'ゆ', pair: 'yu', color: '#4CAF50' },
-            { type: 'hiragana', value: 'や', pair: 'ya', color: '#FF8C00' },
-            { type: 'romaji', value: 'yo', pair: 'よ' }
+            { type: 'romaji', value: 'ya', pair: 'や' },
+            { type: 'hiragana', value: 'よ', pair: 'yo', color: '#a67c52' },
+            { type: 'hiragana', value: 'や', pair: 'ya', color: '#ff8800' },
+            { type: 'hiragana', value: 'ゆ', pair: 'yu', color: '#6bba5a' }
         ];
 
         let selectedCards = [];
@@ -320,19 +321,42 @@
             // 카드를 랜덤하게 섞기
             const shuffledCards = shuffleArray(cardsTemplate);
             
-            shuffledCards.forEach((card, index) => {
+            // 10개 위치 중 가운데 6개만 사용 (위 3개: 2,3,4 / 아래 3개: 7,8,9) - 정중앙 배치
+            const positions = [
+                { row: 1, col: 1, active: false }, // 위 첫번째 (빈칸)
+                { row: 1, col: 2, active: true },  // 위 두번째
+                { row: 1, col: 3, active: true },  // 위 세번째
+                { row: 1, col: 4, active: true },  // 위 네번째
+                { row: 1, col: 5, active: false }, // 위 다섯번째 (빈칸)
+                { row: 2, col: 1, active: false }, // 아래 첫번째 (빈칸)
+                { row: 2, col: 2, active: true },  // 아래 두번째
+                { row: 2, col: 3, active: true },  // 아래 세번째
+                { row: 2, col: 4, active: true },  // 아래 네번째
+                { row: 2, col: 5, active: false }  // 아래 다섯번째 (빈칸)
+            ];
+
+            let cardIndex = 0;
+            positions.forEach((pos, index) => {
                 const cardElement = document.createElement('div');
-                cardElement.className = `card ${card.type}`;
-                cardElement.textContent = card.value;
-                cardElement.dataset.value = card.value;
-                cardElement.dataset.pair = card.pair;
-                cardElement.dataset.index = index;
                 
-                if (card.color && card.type === 'hiragana') {
-                    cardElement.style.color = card.color;
+                if (pos.active && cardIndex < shuffledCards.length) {
+                    const card = shuffledCards[cardIndex];
+                    cardElement.className = `card ${card.type}`;
+                    cardElement.textContent = card.value;
+                    cardElement.dataset.value = card.value;
+                    cardElement.dataset.pair = card.pair;
+                    cardElement.dataset.index = cardIndex;
+                    
+                    if (card.color && card.type === 'hiragana') {
+                        cardElement.style.color = card.color;
+                    }
+                    
+                    cardElement.addEventListener('click', handleCardClick);
+                    cardIndex++;
+                } else {
+                    cardElement.className = 'card placeholder';
                 }
                 
-                cardElement.addEventListener('click', handleCardClick);
                 gameBoard.appendChild(cardElement);
             });
         }
