@@ -72,14 +72,18 @@
         .game-board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 3vw;
-            padding: 0 10vw;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2vw;
+            padding: 0 2vw;
             flex: 1;
             align-content: center;
+            max-width: 80vw;
+            max-height: 70vh;
+            margin: 0 auto;
         }
 
         .card {
-            aspect-ratio: 0.8;
+            aspect-ratio: 1;
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -113,7 +117,7 @@
             color: #000;
             font-family: Arial, sans-serif;
             font-weight: normal;
-            font-size: clamp(70px, 12vw, 180px);
+            font-size: clamp(60px, 10vw, 160px);
             border: clamp(3px, 0.5vw, 6px) solid white;
         }
 
@@ -122,7 +126,7 @@
             border: clamp(3px, 0.5vw, 6px) solid #84c1e4;
             font-family: 'Klee One', cursive;
             font-weight: 600;
-            font-size: clamp(70px, 12vw, 180px);
+            font-size: clamp(60px, 10vw, 160px);
             -webkit-text-stroke: 1.5px currentColor;
         }
 
@@ -225,11 +229,11 @@
     <script>
         const cardsTemplate = [
             { type: 'romaji', value: 'ya', pair: 'や' },
-            { type: 'hiragana', value: 'ゆ', pair: 'yu', color: '#5db854' },
-            { type: 'hiragana', value: 'や', pair: 'ya', color: '#f5952d' },
-            { type: 'romaji', value: 'yo', pair: 'よ' },
-            { type: 'hiragana', value: 'よ', pair: 'yo', color: '#8b7863' },
-            { type: 'romaji', value: 'yu', pair: 'ゆ' }
+            { type: 'romaji', value: 'yu', pair: 'ゆ' },
+            { type: 'hiragana', value: 'よ', pair: 'yo', color: '#8B7355' },
+            { type: 'hiragana', value: 'ゆ', pair: 'yu', color: '#4CAF50' },
+            { type: 'hiragana', value: 'や', pair: 'ya', color: '#FF8C00' },
+            { type: 'romaji', value: 'yo', pair: 'よ' }
         ];
 
         let selectedCards = [];
